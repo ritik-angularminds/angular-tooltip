@@ -42,7 +42,6 @@ export class TooltipDirective {
     this.renderer.appendChild(document.body, this.tooltipEl);
 
     this.renderer.addClass(this.tooltipEl, 'tooltip');
-    this.renderer.addClass(this.tooltipEl, `tooltip-${this.position}`);
 
     this.renderer.setStyle(this.tooltipEl, '-webkit-transition', `opacity ${this.transitionTime}ms`);
     this.renderer.setStyle(this.tooltipEl, '-moz-transition', `opacity ${this.transitionTime}ms`);
@@ -52,6 +51,8 @@ export class TooltipDirective {
 
   setPosition(): void {
     if (this.tooltipEl) {
+      this.renderer.addClass(this.tooltipEl, `tooltip-${this.position}`);
+
       const hostElPosition = this.elRef.nativeElement.getBoundingClientRect();
       const tooltipElPosition = this.tooltipEl.getBoundingClientRect();
       const scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -80,12 +81,12 @@ export class TooltipDirective {
           break;
         }
         default: {
-          top = hostElPosition.top - tooltipElPosition.height - this.offset;
-          left = hostElPosition.left + ((hostElPosition.width - tooltipElPosition.width) / 2);
+          this.renderer.addClass(this.tooltipEl, `tooltip-right`);
+          top = hostElPosition.top + (hostElPosition.height - tooltipElPosition.height) / 2;
+          left = hostElPosition.right + this.offset;
           break;
         }
       }
-
 
       this.renderer.setStyle(this.tooltipEl, 'top', `${top + scrollPos}px`);
       this.renderer.setStyle(this.tooltipEl, 'left', `${left}px`);
