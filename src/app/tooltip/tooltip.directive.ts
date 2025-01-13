@@ -12,7 +12,7 @@ export class TooltipDirective {
 
   tooltipEl!: HTMLElement | null;
   offset = 10;
-  transitionTime = 300;
+  transitionTime = 200;
 
   elRef: ElementRef = inject(ElementRef);
   renderer: Renderer2 = inject(Renderer2);
@@ -26,10 +26,10 @@ export class TooltipDirective {
   }
 
   displayTooltip(): void {
-    if(!this.tooltipEl) {
+    if (!this.tooltipEl) {
       this.create();
       this.setPosition();
-      
+
       //Changing opacity to 1
       this.renderer.addClass(this.tooltipEl, 'tooltip-show');
     }
@@ -94,11 +94,16 @@ export class TooltipDirective {
   }
 
   hideTooltip(): void {
+    if (!this.tooltipEl) return;
     this.renderer.removeClass(this.tooltipEl, 'tooltip-show');
-    window.setTimeout(() => {
+    window.setTimeout(() => this.destroyTooltip(), this.transitionTime);
+  }
+
+  destroyTooltip(): void {
+    if (this.tooltipEl) {
       this.renderer.removeChild(document.body, this.tooltipEl);
       this.tooltipEl = null;
-    }, this.transitionTime);
+    }
   }
 
 }
